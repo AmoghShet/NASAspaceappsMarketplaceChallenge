@@ -1,5 +1,5 @@
 # NASAspaceappsOpenMarketPlaceSol
-The following is our solution to the open marketplace problem from the NASAspaceapps challenge 2023
+The following is our solution to the open marketplace problem from the NASAspaceapps challenge 2023. Variant found in Agnirva.com's submission.
 
 # Uses (prerequisites):
 1) Python
