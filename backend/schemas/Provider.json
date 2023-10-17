@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "Provider": {
+      "$ref": "#/definitions/Provider"
+    }
+  },
+  "required": ["Provider"],
+  "title": "Provider",
+  "definitions": {
+    "Provider": {
+      "$id": "#/properties/Provider",
+      "type": "object",
+      "title": "The Provider Schema",
+      "required": ["ProviderEmail", "Phoneno"],
+      "properties": {
+        "certificateAuthor": {
+          "type": "string"
+        },
+        "ProviderName": {
+          "type": "string"
+        },
+        "ProviderEmail": {
+          "type": "string"
+        },
+        "Phoneno": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "_osConfig": {
+    "uniqueIndexFields": ["contact"],
+    "ownershipAttributes": [],
+    "roles": [],
+    "inviteRoles": ["anonymous"],
+    "enableLogin": false,
+    "credentialTemplate": {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        {
+          "@context": {
+            "Person": "http://schema.org/Person",
+            "name": "http://schema.org/name",
+            "email": {
+              "@id": "http://schema.org/email",
+              "@type": "@id"
+            },
+            "gender": "http://schema.org/gender",
+            "honorificPrefix": "http://schema.org/honorificPrefix",
+            "sibling": {
+              "@id": "http://schema.org/sibling",
+              "@type": "@id"
+            },
+            "telephone": "http://schema.org/telephone",
+            "certified": "schema:Certificate"
+          }
+        },
+        {
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "certificateTitle": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#title",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "authorizedBy": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#authorizedBy",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "Phoneno": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#Phoneno",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "description": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#description",
+              "@context": {
+                "name": "schema:Text"
+              }
+            }
+          }
+        }
+      ],
+      "type": ["VerifiableCredential", "ProviderCertificate"],
+      "issuanceDate": "2022-09-11T00:00:00.007Z",
+      "credentialSubject": {
+        "id": "did:email:{{ProviderEmail}}",
+        "name": "{{ProviderName}}",
+        "email": "{{ProviderEmail}}",
+        "certified": {
+          "certificateTitle": "Provider",
+          "authorizedBy": "{{certificateAuthor}}",
+          "Phoneno": "{{Phoneno}}"
+        }
+      },
+      "issuer": "did:web:agnirva.com"
+    }
+  }
+}

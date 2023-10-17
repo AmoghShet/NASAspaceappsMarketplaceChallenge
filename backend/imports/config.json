@@ -1,0 +1,16 @@
+{
+    "issuers": {
+        "did:web:agnirva.com": {
+            "publicKey": "DaipNW4xaH2bh1XGNNdqjnSYyru3hLnUgTBSfSvmZ2hi",
+            "privateKey": "41WN3qJL5Agwg8MERbEmMLKnkNstv5iSD8oJ8sRnDyBUegeGKgjqgKm9qZTmhcLQSWCdTkSN3Cd1tPqMn1rjM3BJ",
+            "signatureType": "ED25519",
+            "verificationMethod": "did:web:agnirva.com"
+        },
+        "did:email:srikanth@framewirk.com": {
+            "publicKey": "9fVddJfQNTyKNEnArRYEpM5r7wuWNmfMuGsEbAdZULT7",
+            "privateKey": "wTyVHTPiQQy1cQNijU31yM3MEQV34E5sYRsBFvrre4bCFScDJ7SCwapLMmStzGhRG61WyfCV9GwtjKQbYBVRTZf",
+            "signatureType": "ED25519",
+            "verificationMethod": "did:email:srikanth@framewirk.com"
+        }
+    }
+}

@@ -1,0 +1,168 @@
+version: "2.4"
+
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 4
+  db:
+    image: postgres
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  registry:
+    image: dockerhub/sunbird-rc-core
+    volumes:
+      - ./schemas:/home/sunbirdrc/config/public/_schemas
+
+    environment:
+      # Authentication
+      - authentication_enabled=false
+      # Database (Postgres)
+      - connectionInfo_uri=jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - connectionInfo_username=${POSTGRES_USERNAME}
+      - connectionInfo_password=${POSTGRES_PASSWORD}
+      # Elastic
+      - elastic_search_connection_url=es:9200
+      - search_provider=dev.sunbirdrc.registry.service.ElasticSearchService
+      # File storage (minio)
+      - filestorage_connection_url=http://file-storage:9000
+      - filestorage_access_key=admin
+      - filestorage_secret_key=12345678
+      - filestorage_bucket_key=issuance
+      ## Services
+      ### Certificate Signer
+      - sign_url=http://certificate-signer:8079/sign
+      - signature_enabled=true
+      ### Certificate Generator
+      - pdf_url=http://certificate-api:8078/api/v1/certificatePDF
+      - template_base_url=http://registry:8081/api/v1/templates/ #Looks for certificate templates for pdf copy of the signed certificate
+      ### Claims (?)
+      - claims_url=http://claim-ms:8082
+      ## Use the following if authentication is enabled
+      ## In that case, configure an instance of keycloak.
+      ## (https://docs.sunbirdrc.dev/developer-setup#configuring-the-registry)
+      # - sunbird_sso_realm=sunbird-rc
+      # - sunbird_sso_url=http://keycloak:8080/auth
+      # - sunbird_sso_admin_client_id=admin-api
+      # - sunbird_sso_client_id=registry-frontend
+      # - sunbird_sso_admin_client_secret=3a9f3252-36ee-47e0-bbdb-ad2958d7d416
+    ports:
+      - "8081:8081"
+    depends_on:
+      es:
+        condition: service_healthy
+      db:
+        condition: service_started
+  certificate-signer:
+    image: dockerhub/sunbird-rc-certificate-signer
+    environment:
+      - PORT=8079
+      - CONFIG_BASE_PATH=/etc/signer/
+    ports:
+      - "8079:8079"
+    volumes:
+      - ./imports:/etc/signer
+  certificate-api:
+    image: dockerhub/sunbird-rc-certificate-api
+    volumes:
+      - ./scripts:/scripts
+    entrypoint: ["sh", "/scripts/docker-entrypoint.sh"]
+    environment:
+      - PORT=8078
+      - QR_TYPE=URL
+      - CERTIFICATE_DOMAIN_URL=${CERTIFICATE_DOMAIN_URL}
+    ports:
+      - "8078:8078"
+  public-key-service:
+    image: dockerhub/sunbird-rc-public-key-service
+    environment:
+      - CONFIG_BASE_PATH=/etc/keys
+    ports:
+      - "3300:3300"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:3300/api/v1/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 4
+    volumes:
+      - ./imports:/etc/keys
+  file-storage:
+    image: quay.io/minio/minio
+    volumes:
+      - ${HOME}/minio/data:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --address 0.0.0.0:9000 --console-address 0.0.0.0:9001 /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  # claim-ms:
+  #   image: dockerhub/sunbird-rc-claim-ms
+  #   environment:
+  #     - connectionInfo_uri=jdbc:postgresql://db:5432/registry
+  #     - connectionInfo_username=postgres
+  #     - connectionInfo_password=postgres
+  #     - sunbirdrc_url=http://registry:8081
+  #   ports:
+  #     - "8082:8082"
+  #   depends_on:
+  #     db:
+  #       condition: service_started
+  #     registry:
+  #       condition: service_started
+  # verification-ui:
+  #   image: tejashjl/verification
+  #   ports:
+  #     - "80:80"
+  ## Used for authentication
+  # keycloak:
+  #   image: dockerhub/ndear-keycloak
+  #   volumes:
+  #     - ./imports:/opt/jboss/keycloak/imports
+  #   environment:
+  #     - DB_VENDOR=postgres
+  #     - DB_ADDR=db
+  #     - DB_PORT=5432
+  #     - DB_DATABASE=registry
+  #     - DB_USER=postgres
+  #     - DB_PASSWORD=postgres
+  #     - KEYCLOAK_USER=admin
+  #     - KEYCLOAK_PASSWORD=admin
+  #     - KEYCLOAK_IMPORT=/opt/jboss/keycloak/imports/realm-export.json
+  #   healthcheck:
+  #     test:
+  #       ["CMD-SHELL", "curl -f http://localhost:9990/ || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #   ports:
+  #     - "8080:8080"
+  #     - "9990:9990"
+  #   depends_on:
+  #     db:
+  #       condition: service_started

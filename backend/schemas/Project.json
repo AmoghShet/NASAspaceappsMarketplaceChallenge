@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "Project": {
+      "$ref": "#/definitions/Project"
+    }
+  },
+  "required": ["Project"],
+  "title": "Project",
+  "definitions": {
+    "Project": {
+      "$id": "#/properties/Project",
+      "type": "object",
+      "title": "The Project Schema",
+      "required": ["ProjectTitle"],
+      "properties": {
+        "certificateAuthor": {
+          "type": "string"
+        },
+        "ProjectOwner": {
+          "type": "string"
+        },
+        "ProjectTitle": {
+          "type": "string"
+        },
+        "ProjectDescription": {
+          "type": "string"
+        },
+        "ProjectStartDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "ProjectDuration": {
+          "type": "string"
+        },
+        "ProjectMembers": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "_osConfig": {
+    "uniqueIndexFields": ["contact"],
+    "ownershipAttributes": [],
+    "roles": [],
+    "inviteRoles": ["anonymous"],
+    "enableLogin": false,
+    "credentialTemplate": {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        {
+          "@context": {
+            "Person": "http://schema.org/Person",
+            "name": "http://schema.org/name",
+            "email": {
+              "@id": "http://schema.org/email",
+              "@type": "@id"
+            },
+            "gender": "http://schema.org/gender",
+            "honorificPrefix": "http://schema.org/honorificPrefix",
+            "sibling": {
+              "@id": "http://schema.org/sibling",
+              "@type": "@id"
+            },
+            "telephone": "http://schema.org/telephone",
+            "certified": "schema:Certificate"
+          }
+        },
+        {
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "certificateTitle": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#title",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "authorizedBy": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#authorizedBy",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "ProjectTitle": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#ProjectTitle",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "description": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#description",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "ProjectDuration": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#ProjectDuration",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "ProjectStartDate": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#ProjectStartDate",
+              "@context": {
+                "name": "schema:date"
+              }
+            },
+            "ProjectMembers": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#ProjectMembers",
+              "@context": {
+                "name": "schema:Text"
+              }
+            }
+          }
+        }
+      ],
+      "type": ["VerifiableCredential", "ProjectCertificate"],
+      "issuanceDate": "2022-09-11T00:00:00.007Z",
+      "credentialSubject": {
+        "name": "{{ProjectOwner}}",
+        "certified": {
+          "certificateTitle": "Project",
+          "authorizedBy": "{{certificateAuthor}}",
+          "ProjectTitle": "{{ProjectTitle}}",
+          "description": "{{ProjectDescription}}",
+          "ProjectDuration": "{{ProjectDuration}}",
+          "ProjectStartDate": "{{ProjectStartDate}}",
+          "ProjectMembers": "{{ProjectMembers}}"
+        }
+      },
+      "issuer": "did:web:agnirva.com"
+    }
+  }
+}

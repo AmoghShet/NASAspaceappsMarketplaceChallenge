@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "Endorsement": {
+      "$ref": "#/definitions/Endorsement"
+    }
+  },
+  "required": ["Endorsement"],
+  "title": "Endorsement",
+  "definitions": {
+    "Endorsement": {
+      "$id": "#/properties/Endorsement",
+      "type": "object",
+      "title": "The Endorsement Schema",
+      "required": ["EndorsedSkill", "EndorsementName"],
+      "properties": {
+        "certificateAuthor": {
+          "type": "string"
+        },
+        "EndorsementName": {
+          "type": "string"
+        },
+        "EndorsedSkill": {
+          "type": "string"
+        },
+        "EndorsementDescription": {
+          "type": "string"
+        },
+        "EndorsementAssosiatedWith": {
+          "type": "string"
+        },
+        "EndorsedBy": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "_osConfig": {
+    "uniqueIndexFields": ["contact"],
+    "ownershipAttributes": [],
+    "roles": [],
+    "inviteRoles": ["anonymous"],
+    "enableLogin": false,
+    "credentialTemplate": {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        {
+          "@context": {
+            "Person": "http://schema.org/Person",
+            "name": "http://schema.org/name",
+            "email": {
+              "@id": "http://schema.org/email",
+              "@type": "@id"
+            },
+            "gender": "http://schema.org/gender",
+            "honorificPrefix": "http://schema.org/honorificPrefix",
+            "sibling": {
+              "@id": "http://schema.org/sibling",
+              "@type": "@id"
+            },
+            "telephone": "http://schema.org/telephone",
+            "certified": "schema:Certificate"
+          }
+        },
+        {
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "certificateTitle": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#title",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "authorizedBy": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#authorizedBy",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "EndorsedSkill": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#EndorsedSkill",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "description": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#description",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "EndorsementAssosiatedWith": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#EndorsementAssosiatedWith",
+              "@context": {
+                "name": "schema:Text"
+              }
+            },
+            "EndorsedBy": {
+              "@id": "http://github.com/sunbird-spec/vc-specs#EndorsedBy",
+              "@context": {
+                "name": "schema:Text"
+              }
+            }
+          }
+        }
+      ],
+      "type": ["VerifiableCredential", "EndorsementCertificate"],
+      "issuanceDate": "2022-09-11T00:00:00.007Z",
+      "credentialSubject": {
+        "name": "{{EndorsementName}}",
+        "certified": {
+          "certificateTitle": "Endorsement",
+          "authorizedBy": "{{certificateAuthor}}",
+          "EndorsedSkill": "{{EndorsedSkill}}",
+          "description": "{{EndorsementDescription}}",
+          "EndorsementAssosiatedWith": "{{EndorsementAssosiatedWith}}",
+          "EndorsedBy": "{{EndorsedBy}}"
+        }
+      },
+      "issuer": "did:web:agnirva.com"
+    }
+  }
+}

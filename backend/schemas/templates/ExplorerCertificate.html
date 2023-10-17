@@ -1,0 +1,40 @@
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="badge.css">
+    <link href='https://fonts.googleapis.com/css?family=Rajdhani' rel='stylesheet'>
+</head>
+
+<body style="width: auto; background-color: #F4F0E8">
+    <div style=" margin: 1em; padding: 2rem; border-radius: 5px; height: 90vh;">
+        <div style="padding: 1em; text-align: center; font-size: 4em;">
+            Explorer Badge
+        </div>
+        <div class="line">
+            <p>
+                This is to certify that <br />
+                <b>{{credentialSubject.name}}</b> (<a
+                    href="mailto:{{credentialSubject.email}}">{{credentialSubject.email}}</a>) <br />
+                has successfully been an explorer of Agnirva.com <br />
+                <b><q>{{credentialSubject.certified.taskTitle}}.</q></b><br />
+                from {{dateFormat proof.created "dddd, MMMM Do YYYY"}}
+            </p>
+        </div>
+        <div valign="bottom">
+            <img style="display: block; margin: auto; padding: 2rem" src="{{qrCode}}" alt="qr_code" />
+        </div>
+        <div style="align-items: center; align-self: center; text-align: center;">
+            <table style="align-items: center; align-self: center; text-align: center; margin-left: auto; margin-right: auto;">
+                <tr>
+                    <td><b>Certificate Author: </b></td>
+                    <td>{{credentialSubject.certified.authorizedBy}}</td>
+                </tr>
+            </table>
+        </div>
+        <div style="align-items: center; align-self: center; text-align: center;">
+            <p>CERTIFIED ISSUED BY AGNIRVA.COM <br />{{ issuer }}</p>
+        </div>
+    </div>
+</body>
+
+</html>
